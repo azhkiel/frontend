@@ -1,26 +1,415 @@
+@import url("https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap");
 @import "tailwindcss";
 
+/* ============================================================
+   DESIGN TOKENS — Website Desa Sumberagung
+   Palet: Hijau Formal + Emas — 60-30-10 distribution
+   ============================================================ */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Warna Primer */
+  --color-primary:       #2F5233;
+  --color-primary-dark:  #1E3820;
+  --color-primary-light: #3D6B47;
+  --color-primary-50:    #EFF5F0;
+  --color-primary-100:   #D3E5D7;
+
+  /* Aksen Emas */
+  --color-accent:        #D9A441;
+  --color-accent-dark:   #B8872E;
+  --color-accent-light:  #E8BD6A;
+
+  /* Permukaan & Latar */
+  --color-surface:       #F7F5F0;
+  --color-white:         #FFFFFF;
+  --color-border:        #DDD9D0;
+
+  /* Teks — pastikan ≥ 4.5:1 contrast */
+  --color-text-primary:  #2B2B26;
+  --color-text-secondary:#4A4A40;
+  --color-text-muted:    #767668;
+
+  /* Status / Kategori */
+  --color-pengumuman:    #1E5FAD;
+  --color-kegiatan:      #2F5233;
+  --color-pembangunan:   #A0522D;
+  --color-lainnya:       #5C5C50;
+
+  /* Tipografi — Bricolage Grotesque untuk display heading */
+  --font-display: "Bricolage Grotesque", system-ui, sans-serif;
+  --font-body:    "Plus Jakarta Sans", system-ui, sans-serif;
+
+  /* Radius — differentiated scale, NOT one value */
+  --radius-sm:   0.25rem;  /* inputs, badges */
+  --radius-md:   0.5rem;   /* buttons, cards */
+  --radius-lg:   0.75rem;  /* cards besar */
+  --radius-xl:   1rem;     /* modals */
+
+  /* Shadow — elevation hierarchy */
+  --shadow-sm:   0 1px 2px 0 rgb(43 43 38 / 0.06);
+  --shadow-md:   0 4px 12px 0 rgb(43 43 38 / 0.10);
+  --shadow-lg:   0 8px 24px 0 rgb(43 43 38 / 0.12);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+/* Tailwind v4 @theme — extend utility classes */
+@theme {
+  --color-primary:        #2F5233;
+  --color-primary-dark:   #1E3820;
+  --color-primary-light:  #3D6B47;
+  --color-primary-50:     #EFF5F0;
+  --color-primary-100:    #D3E5D7;
+
+  --color-accent:         #D9A441;
+  --color-accent-dark:    #B8872E;
+  --color-accent-light:   #E8BD6A;
+
+  --color-surface:        #F7F5F0;
+  --color-border:         #DDD9D0;
+
+  --color-text-primary:   #2B2B26;
+  --color-text-secondary: #4A4A40;
+  --color-text-muted:     #767668;
+
+  --font-display: "Bricolage Grotesque", system-ui, sans-serif;
+  --font-body:    "Plus Jakarta Sans", system-ui, sans-serif;
+
+  --radius-sm:  0.25rem;
+  --radius-md:  0.5rem;
+  --radius-lg:  0.75rem;
+  --radius-xl:  1rem;
+
+  --shadow-sm:  0 1px 2px 0 rgb(43 43 38 / 0.06);
+  --shadow-md:  0 4px 12px 0 rgb(43 43 38 / 0.10);
+  --shadow-lg:  0 8px 24px 0 rgb(43 43 38 / 0.12);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* ============================================================
+   BASE RESET & TYPOGRAPHY
+   ============================================================ */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-body);
+  color: var(--color-text-primary);
+  background-color: var(--color-white);
+  line-height: 1.625;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Display headings: Bricolage Grotesque */
+h1, h2 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--color-text-primary);
+}
+
+/* Sub-headings: Plus Jakarta Sans */
+h3, h4, h5, h6 {
+  font-family: var(--font-body);
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--color-text-primary);
+}
+
+/* Body text: max-w-prose untuk readability */
+p {
+  max-width: 65ch;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* ============================================================
+   UTILITAS GLOBAL
+   ============================================================ */
+
+/* Angka tabular untuk statistik */
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum";
+}
+
+/* Full height layout yang aman di mobile */
+.h-screen-safe {
+  height: 100dvh;
+}
+
+/* Divider formal */
+.divider-formal {
+  border: none;
+  border-top: 1px solid var(--color-primary-100);
+  margin: 0;
+}
+
+/* ============================================================
+   KOMPONEN DASAR
+   ============================================================ */
+
+/* Tombol primer — solid color, bukan gradient */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  background-color: var(--color-primary);
+  color: var(--color-white);
+  font-family: var(--font-body);
+  font-weight: 500;
+  font-size: 0.875rem;   /* text-sm */
+  padding: 0.5rem 1rem;  /* px-4 py-2 — standard size */
+  border-radius: var(--radius-md);
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: background-color 150ms ease-out, box-shadow 150ms ease-out;
+}
+
+.btn-primary:hover {
+  background-color: var(--color-primary-dark);
+  box-shadow: var(--shadow-sm);
+}
+
+.btn-primary:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+/* Tombol outline */
+.btn-outline {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  background-color: transparent;
+  color: var(--color-primary);
+  font-family: var(--font-body);
+  font-weight: 500;
+  font-size: 0.875rem;
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius-md);
+  border: 1.5px solid var(--color-primary);
+  cursor: pointer;
+  transition: background-color 150ms ease-out, color 150ms ease-out;
+}
+
+.btn-outline:hover {
+  background-color: var(--color-primary-50);
+}
+
+.btn-outline:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+/* Kartu standar — solid surface, hover:shadow + border transition */
+.card {
+  background-color: var(--color-white);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  transition: box-shadow 150ms ease-out, border-color 150ms ease-out, transform 150ms ease-out;
+  will-change: transform;
+}
+
+.card:hover {
+  box-shadow: var(--shadow-md);
+  border-color: #b8c9bb;
+  transform: translateY(-1px);
+}
+
+/* Badge kategori — rounded-sm (bukan pill) */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--font-body);
+  font-size: 0.6875rem;  /* 11px */
+  font-weight: 500;
+  padding: 0.1875rem 0.5rem;
+  border-radius: var(--radius-sm);
+  letter-spacing: 0.01em;
+}
+
+/* ============================================================
+   ANIMASI — prefers-reduced-motion MANDATORY
+   additive approach: animate only when user allows motion
+   ============================================================ */
+
+/* Subtractive reset untuk reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Reveal: additive — hanya aktif jika user OK dengan motion */
+@media (prefers-reduced-motion: no-preference) {
+  .reveal {
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 250ms ease-out, transform 250ms ease-out;
+  }
+
+  .reveal.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Skeleton loading pulse */
+@keyframes skeleton-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.45; }
+}
+
+.skeleton {
+  background-color: var(--color-primary-100);
+  border-radius: var(--radius-sm);
+  animation: skeleton-pulse 1.6s ease infinite;
+}
+
+/* ============================================================
+   SVG ICON UTILITY — monochrome, sized untuk UI
+   ============================================================ */
+.icon-sm {
+  width: 1rem;
+  height: 1rem;
+  flex-shrink: 0;
+}
+
+.icon-md {
+  width: 1.25rem;
+  height: 1.25rem;
+  flex-shrink: 0;
+}
+
+/* ============================================================
+   REVEAL ANIMATION — Intersection Observer, additive, guarded
+   Anti-AI-SLop §10: opacity+translateY kecil, 250ms, fire-once
+   ============================================================ */
+
+/* Default: elemen sudah visible (SSR, prefers-reduced) */
+.reveal {
+  transition-property: opacity, transform;
+  transition-duration: 250ms;
+  transition-timing-function: ease-out;
+}
+
+/* Additive: hanya aktif jika user tidak prefer reduced-motion */
+@media (prefers-reduced-motion: no-preference) {
+  .reveal {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+
+  .reveal-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Varian: slide dari kiri (untuk section heading) */
+  .reveal-left {
+    opacity: 0;
+    transform: translateX(-12px);
+    transition-property: opacity, transform;
+    transition-duration: 200ms;
+    transition-timing-function: ease-out;
+  }
+
+  .reveal-left.reveal-visible {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Reduced-motion: pastikan animasi tidak jalan */
+@media (prefers-reduced-motion: reduce) {
+  .reveal,
+  .reveal-left {
+    opacity: 1 !important;
+    transform: none !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ============================================================
+   UX INTERACTIVITY — focus ring, link underline, transitions
+   ============================================================ */
+
+/* Focus ring global yang konsisten */
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+/* Nav link: underline animasi dari kiri ke kanan */
+.nav-link {
+  position: relative;
+  text-decoration: none;
+}
+
+.nav-link::after {
+  content: "";
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background-color: var(--color-accent);
+  transition: width 150ms ease-out;
+}
+
+.nav-link:hover::after,
+.nav-link[aria-current="page"]::after {
+  width: 100%;
+}
+
+/* Image zoom container — ≤2px translate, no layout shift */
+.img-zoom {
+  overflow: hidden;
+}
+
+.img-zoom img {
+  transition: transform 300ms ease-out;
+}
+
+.img-zoom:hover img {
+  transform: scale(1.03);
+}
+
+/* Teks di atas background gelap — utility */
+.text-on-dark {
+  color: #FFFFFF;
+}
+
+.text-on-dark-muted {
+  color: #D3E5D7; /* primary-100 — cukup kontras di bg putih gelap */
+}
+
+/* Utility: badge tile info */
+.info-tile {
+  background-color: var(--color-primary-50);
+  border: 1px solid var(--color-primary-100);
+  border-radius: var(--radius-md);
+  padding: 1.25rem;
+  transition: box-shadow 150ms ease-out;
+}
+
+.info-tile:hover {
+  box-shadow: var(--shadow-sm);
 }
