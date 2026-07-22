@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
+import { useProfilDesa } from "@/hooks/useProfilDesa";
 
 const NAV_LINKS = [
   { href: "/",         label: "Beranda"  },
@@ -17,6 +18,18 @@ const NAV_LINKS = [
 export default function Navbar() {
   const pathname  = usePathname();
   const [open, setOpen] = useState(false);
+  const { profil } = useProfilDesa();
+
+  const namaDesa   = profil?.namaDesa   ?? "Desa Kedungpari";
+  const kecamatan  = profil?.namaKecamatan ?? "Kec. Mojowarno, Kab. Jombang";
+  const logoUrl    = profil?.logoUrl ?? null;
+  // Ambil singkatan 2 huruf dari nama desa sebagai fallback
+  const logoFallback = namaDesa
+    .split(" ")
+    .filter((w) => w.length > 1)
+    .slice(0, 2)
+    .map((w) => w[0].toUpperCase())
+    .join("");
 
   return (
     <header className="sticky top-0 z-50 bg-white border-b-2 border-primary-100 shadow-sm">
@@ -25,14 +38,26 @@ export default function Navbar() {
 
           {/* Logo + Nama Desa */}
           <Link href="/" className="flex items-center gap-3 shrink-0">
-            <div className="w-9 h-9 rounded-full bg-primary flex items-center justify-center text-white font-body font-bold text-xs leading-none" aria-hidden="true">
-              DS
-            </div>
+            {logoUrl ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={logoUrl}
+                alt={`Logo ${namaDesa}`}
+                className="w-9 h-9 rounded-full object-contain"
+              />
+            ) : (
+              <div
+                className="w-9 h-9 rounded-full bg-primary flex items-center justify-center text-white font-body font-bold text-xs leading-none"
+                aria-hidden="true"
+              >
+                {logoFallback || "DS"}
+              </div>
+            )}
             <div className="leading-tight">
               <p className="font-display font-bold text-primary text-sm sm:text-base leading-none">
-                Desa Kedungpari
+                {namaDesa}
               </p>
-              <p className="text-text-muted text-xs font-body">Kec. Mojowarno, Kab. Jombang</p>
+              <p className="text-text-muted text-xs font-body">{kecamatan}</p>
             </div>
           </Link>
 

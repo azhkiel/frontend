@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useProfilDesa } from "@/hooks/useProfilDesa";
 
 interface NavItem {
   label: string;
@@ -87,6 +88,16 @@ const NAV_ITEMS: NavItem[] = [
 
 export default function AdminSidebar() {
   const pathname = usePathname();
+  const { profil } = useProfilDesa();
+
+  const namaDesa  = profil?.namaDesa ?? "Desa";
+  const logoUrl   = profil?.logoUrl  ?? null;
+  const logoFallback = namaDesa
+    .split(" ")
+    .filter((w) => w.length > 1)
+    .slice(0, 2)
+    .map((w) => w[0].toUpperCase())
+    .join("");
 
   function isActive(href: string) {
     if (href === "/admin") return pathname === "/admin";
@@ -98,14 +109,23 @@ export default function AdminSidebar() {
       {/* Logo */}
       <div className="admin-sidebar-logo">
         <div className="admin-sidebar-logo-icon">
-          <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5 text-white">
-            <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z" />
-            <polyline points="9 22 9 12 15 12 15 22" />
-          </svg>
+          {logoUrl ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={logoUrl}
+              alt={`Logo ${namaDesa}`}
+              className="w-full h-full object-contain rounded-md"
+            />
+          ) : (
+            <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5 text-white">
+              <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z" />
+              <polyline points="9 22 9 12 15 12 15 22" />
+            </svg>
+          )}
         </div>
         <div>
           <p className="admin-sidebar-title">Admin Desa</p>
-          <p className="admin-sidebar-subtitle">Kedungpari</p>
+          <p className="admin-sidebar-subtitle">{namaDesa}</p>
         </div>
       </div>
 

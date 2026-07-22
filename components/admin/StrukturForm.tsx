@@ -1,4 +1,5 @@
 "use client";
+
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { FormField, Input } from "@/components/admin/FormField";
@@ -35,6 +36,8 @@ export default function StrukturForm({ initial, onSubmit, isLoading, submitLabel
     const e: typeof errors = {};
     if (!form.nama.trim())    e.nama = "Nama wajib diisi.";
     if (!form.jabatan.trim()) e.jabatan = "Jabatan wajib diisi.";
+    if (form.noHp && !/^[\d\s\+\-\(\)]+$/.test(form.noHp))
+      e.noHp = "Format nomor HP tidak valid. Gunakan angka, spasi, +, atau tanda hubung.";
     setErrors(e);
     return Object.keys(e).length === 0;
   }
@@ -52,27 +55,81 @@ export default function StrukturForm({ initial, onSubmit, isLoading, submitLabel
       {submitError && <div className="admin-alert admin-alert--error" role="alert">{submitError}</div>}
 
       <div className="admin-form-grid">
-        <FormField id="struktur-nama" label="Nama" required error={errors.nama}>
-          <Input id="struktur-nama" value={form.nama} onChange={(e) => set("nama", e.target.value)} error={!!errors.nama} placeholder="Nama lengkap" />
+        <FormField
+          id="struktur-nama"
+          label="Nama Lengkap"
+          required
+          error={errors.nama}
+          hint="Nama lengkap perangkat desa sesuai dokumen resmi."
+        >
+          <Input
+            id="struktur-nama"
+            value={form.nama}
+            onChange={(e) => set("nama", e.target.value)}
+            error={!!errors.nama}
+            placeholder="contoh: Budi Santoso, S.Pd."
+          />
         </FormField>
 
-        <FormField id="struktur-jabatan" label="Jabatan" required error={errors.jabatan}>
-          <Input id="struktur-jabatan" value={form.jabatan} onChange={(e) => set("jabatan", e.target.value)} error={!!errors.jabatan} placeholder="Kepala Desa / Sekretaris Desa / dll" />
+        <FormField
+          id="struktur-jabatan"
+          label="Jabatan"
+          required
+          error={errors.jabatan}
+          hint='Jabatan resmi dalam struktur pemerintahan desa. Contoh: "Kepala Desa", "Sekretaris Desa", "Kaur Keuangan".'
+        >
+          <Input
+            id="struktur-jabatan"
+            value={form.jabatan}
+            onChange={(e) => set("jabatan", e.target.value)}
+            error={!!errors.jabatan}
+            placeholder="Kepala Desa / Sekretaris Desa / Kaur / dll"
+          />
         </FormField>
 
-        <FormField id="struktur-nohp" label="No. HP (opsional)">
-          <Input id="struktur-nohp" value={form.noHp ?? ""} onChange={(e) => set("noHp", e.target.value)} placeholder="08xxxxxxxxxx" />
+        <FormField
+          id="struktur-nohp"
+          label="No. HP / WhatsApp (opsional)"
+          error={errors.noHp}
+          hint='Nomor yang bisa dihubungi warga. Format: "08xxxxxxxxxx" atau "+628xxxxxxxxxx". Akan ditampilkan di halaman struktur.'
+        >
+          <Input
+            id="struktur-nohp"
+            value={form.noHp ?? ""}
+            onChange={(e) => set("noHp", e.target.value)}
+            error={!!errors.noHp}
+            placeholder="08xxxxxxxxxx"
+            type="tel"
+          />
         </FormField>
 
-        <FormField id="struktur-urutan" label="Urutan Tampil" hint="Angka lebih kecil tampil lebih awal">
-          <Input id="struktur-urutan" type="number" min={1} value={form.urutan} onChange={(e) => set("urutan", parseInt(e.target.value) || 99)} />
+        <FormField
+          id="struktur-urutan"
+          label="Urutan Tampil"
+          hint="Angka lebih kecil tampil lebih awal di halaman struktur. Kepala Desa biasanya urutan 1, Sekdes 2, dst."
+        >
+          <Input
+            id="struktur-urutan"
+            type="number"
+            min={1}
+            max={999}
+            value={form.urutan}
+            onChange={(e) => set("urutan", parseInt(e.target.value) || 99)}
+          />
         </FormField>
       </div>
 
-      <ImageUpload label="Foto" folder="STRUKTUR" currentUrl={form.fotoUrl || undefined} onUpload={(url) => set("fotoUrl", url)} />
+      <ImageUpload
+        label="Foto Profil Perangkat Desa"
+        folder="STRUKTUR"
+        currentUrl={form.fotoUrl || undefined}
+        onUpload={(url) => set("fotoUrl", url)}
+      />
 
       <div className="admin-form-actions">
-        <button type="button" onClick={() => router.back()} className="admin-btn admin-btn--ghost" disabled={isLoading}>Batal</button>
+        <button type="button" onClick={() => router.back()} className="admin-btn admin-btn--ghost" disabled={isLoading}>
+          Batal
+        </button>
         <button type="submit" className="admin-btn admin-btn--primary" disabled={isLoading} id="struktur-submit-btn">
           {isLoading ? <><div className="admin-spinner admin-spinner--sm" /> Menyimpan...</> : submitLabel}
         </button>
