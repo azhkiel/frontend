@@ -25,7 +25,21 @@ if (!BASE_URL && typeof window === "undefined") {
 
 /** GET request — action lewat query string */
 async function apiFetch<T>(action: string, params?: Record<string, string>): Promise<T> {
-  const url = new URL(BASE_URL);
+  if (!BASE_URL) {
+    throw new Error(
+      `[apiFetch] Gagal memanggil "${action}" karena NEXT_PUBLIC_API_URL belum diset di Environment Variables.`
+    );
+  }
+
+  let url: URL;
+  try {
+    url = new URL(BASE_URL);
+  } catch (e) {
+    throw new Error(
+      `[apiFetch] Gagal memanggil "${action}" karena nilai NEXT_PUBLIC_API_URL ("${BASE_URL}") tidak valid sebagai URL.`
+    );
+  }
+
   url.searchParams.set("action", action);
   if (params) {
     Object.entries(params).forEach(([k, v]) => url.searchParams.set(k, v));
@@ -43,6 +57,12 @@ async function apiFetch<T>(action: string, params?: Record<string, string>): Pro
 
 /** POST request — body JSON, header text/plain untuk bypass CORS preflight */
 async function apiPost<T>(body: Record<string, unknown>): Promise<T> {
+  if (!BASE_URL) {
+    throw new Error(
+      `[apiPost] Gagal POST ke API karena NEXT_PUBLIC_API_URL belum diset di Environment Variables.`
+    );
+  }
+
   const res = await fetch(BASE_URL, {
     method: "POST",
     headers: { "Content-Type": "text/plain;charset=utf-8" },
