@@ -1,6 +1,6 @@
 // ============================================================
 // TYPES — Website Desa Kedungpari
-// Cermin skema Google Sheets §4 dari Skill.md
+// Cermin skema Google Sheets + API.md
 // ============================================================
 
 export interface Profil {
@@ -74,21 +74,62 @@ export interface Statistik {
   tahunData: number;
 }
 
+export type UserRole = "admin" | "superadmin";
+
+export interface User {
+  id: string;
+  username: string;
+  nama: string;
+  role: UserRole;
+  aktif: boolean;
+}
+
 // ============================================================
-// Helper types untuk response API
+// Auth
 // ============================================================
 
-export interface ApiResponse<T> {
-  data: T;
+export interface AuthSession {
+  token: string;
+  nama: string;
+  role: UserRole;
+}
+
+// ============================================================
+// API Response helpers
+// ============================================================
+
+export interface ApiWriteResponse {
+  success: boolean;
+  id?: string;
   error?: string;
 }
 
+export interface ApiUploadResponse {
+  success: boolean;
+  url: string;
+  fileId: string;
+  error?: string;
+}
+
+export interface ApiError {
+  error: string;
+}
+
+// ============================================================
+// Query params
+// ============================================================
+
 export interface BeritaQueryParams {
   kategori?: KategoriBerita;
+  sortBy?: string;
   limit?: number;
   offset?: number;
 }
 
 export interface PotensiQueryParams {
   kategori?: KategoriPotensi;
+}
+
+export interface GaleriQueryParams {
+  tipe?: TipeGaleri;
 }
